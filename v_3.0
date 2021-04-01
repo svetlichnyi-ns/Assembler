@@ -1,0 +1,79 @@
+import RPi.GPIO as GPIO
+import time
+import numpy as np
+import matplotlib.pyplot as plt
+
+DAC_list = (26,19,13,6,5,11,9,10)
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(DAC_list, GPIO.OUT)
+
+def num2dec (value):
+    bit_depth = 8
+    N = bit_depth - 1
+    p = 0
+    X = []
+    while N > 0:
+        p = int(value/2**N)
+        if p==1:
+            X.append(1)
+            value-=2**N
+        else:
+            X.append(0)
+        N-=1
+    X.append(value)
+    return X
+
+def lightNumber (number):
+    global DAC_list
+    GPIO.output(DAC_list, 0)
+    array = num2dec (number)
+    for j in range(len(DAC_list)):
+        if int(array[7 - j]):
+            GPIO.output(DAC_list[7 - j],1)
+
+GPIO.output(DAC_list, 0)
+
+while 1:
+    try:
+        print("Введите число (-1 для выхода): ")
+        number = int(input())
+        if number == -1:
+            print("Выход из программы")
+            break
+        if number > 255:
+            print("Введённые данные некорректны")
+        else:
+             lightNumber (number)
+    except ValueError:
+        print("Введённые данные некорректны")
+ 
+#print("Введите число повторений: ")
+#repetitionsNumber = int(input())
+#while repetitionsNumber > 0:
+#    for i in range(0,255):
+#        lightNumber(i)
+#        time.sleep(0.01)
+#    for i in range(0,255):
+#        lightNumber(255 - i)
+#        time.sleep(0.01)    
+#    repetitionsNumber -= 1
+    
+time = np.arange(0, 20, 15)
+amplitude = 1.5*(np.sin(time) + 1)
+plt.plot(time, amplitude)
+plt.title("Синус")
+plt.xlabel("Время")
+plt.ylabel("Амплитуда sin(time)")
+plt.show()
+  
+try:
+    time = float(input())
+    frequency = float(input())
+    period = 1 / frequency
+    samplingFrequency = float(input())
+    
+    
+except ValueError:
+    print("Введённые данные некорректны")
+  
+GPIO.cleanup()
