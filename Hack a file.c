@@ -24,7 +24,7 @@ void main(int argc, char **argv) {
     }
     printf("You have opened the file!\n");
     do {
-        fread(comparison, sizeof(char), length, changed_file); // в массив символов "comparison" считаем первые length символов из файла
+        fread(comparison, sizeof(char), length, changed_file); // в массив символов "comparison" считаем length символов из файла, начиная с текущего положения его внутреннего указателя
         comparison[length] = '\0'; // в конце считанного массива сиволов установим нуль-терминированный байт
         if (strcmp(comparison, initial_phrase) == 0) { // сравним считанную строку с искомой строкой "Hello, world!"
             printf("The string 'Hello, world!' has been found!\n");
@@ -40,7 +40,7 @@ void main(int argc, char **argv) {
                 break;
             }
         }
-    } while (feof(changed_file) == 0); // цикл продолжается до тех пор, пока не будет найдена нужная строка
+    } while (feof(changed_file) == 0); // цикл продолжается до тех пор, пока не будет достигнут конец файла
     fclose(changed_file);
     return;
 }
