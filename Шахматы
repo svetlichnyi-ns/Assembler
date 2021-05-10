@@ -8,26 +8,26 @@ section .data:
 name: 	db "chess.txt", 0	
 
 the_first_string: db "1 0 1 0 1 0 1 0", 10
-len_1 equ $ - text_1 ; вычисление длины первой строки
+len_1 equ $ - the_first_string
 
 the_second_string: db "0 1 0 1 0 1 0 1", 10
-len_2 equ $ - text_2 ; вычисление длины второй строки
+len_2 equ $ - the_second_string
 
 section .text
 _start:
   call opening_file
-	mov [var_fd], rax
+  mov [var_fd], rax
 	
   mov r10, 4
-	enter:
-	call writing_the_first_string
-	call writing_the_second_string
-	dec r10
-	cmp r10, 0
-	jg enter
+  enter:
+  call writing_the_first_string
+  call writing_the_second_string
+  dec r10
+  cmp r10, 0
+  jg enter
   
   call closing_file
-	call exit_from_the_program
+  call exit_from_the_program
   ret
 
 opening_file:
