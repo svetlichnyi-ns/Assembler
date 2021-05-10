@@ -1,0 +1,66 @@
+global _start
+flags equ 0x42
+
+section .bss 
+var_fd: resq 1
+
+section .data:
+name: 	db "chess.txt", 0	
+
+the_first_string: db "1 0 1 0 1 0 1 0", 10
+len_1 equ $ - text_1 ; вычисление длины первой строки
+
+the_second_string: db "0 1 0 1 0 1 0 1", 10
+len_2 equ $ - text_2 ; вычисление длины второй строки
+
+section .text
+_start:
+  call opening_file
+	mov [var_fd], rax
+	
+  mov r10, 4
+	enter:
+	call writing_the_first_string
+	call writing_the_second_string
+	dec r10
+	cmp r10, 0
+	jg enter
+  
+  call closing_file
+	call exit_from_the_program
+  ret
+
+opening_file:
+	mov rax, 2
+	mov rdi, name
+	mov rsi, flags
+	syscall
+	ret
+
+writing_the_first_string:
+	mov rax, 1
+	mov rdi, [var_fd]
+	mov rsi, the_first_string
+	mov rdx, len_1
+	syscall
+	ret
+
+writing_the_second_string:
+	mov rax, 1
+	mov rdi, [var_fd]
+	mov rsi, the_second_string
+	mov rdx, len_2
+	syscall
+	ret
+
+closing_file:
+	mov rax, 3
+	mov rdi, [var_fd]
+	syscall
+	ret
+
+exit_from_the_program:
+	mov rax, 60
+	xor rdi, rdi
+	syscall
+	ret
